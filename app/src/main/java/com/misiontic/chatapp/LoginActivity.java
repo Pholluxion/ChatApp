@@ -105,7 +105,7 @@ public class LoginActivity extends AppCompatActivity {
 
         Intent gotoHome = new Intent(this,HomeActivity.class);
 
-        gotoHome.putExtra("email",user.getUid());
+        gotoHome.putExtra("email",user.getEmail());
         startActivity(gotoHome);
         finish();
 
