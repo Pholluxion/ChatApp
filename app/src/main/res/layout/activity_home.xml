@@ -26,15 +26,14 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom"
             android:gravity="bottom|center"
-            android:background="@color/browser_actions_bg_grey"
             android:orientation="horizontal">
 
             <EditText
                 android:id="@+id/txtMessage"
                 android:layout_width="match_parent"
-                android:layout_height="100dp"
+                android:layout_height="80dp"
                 android:layout_weight="1"
-                android:backgroundTint="#AFAFAF"
+                android:background="@drawable/estilo_txt"
                 android:ems="10"
                 android:gravity="start|top"
                 android:inputType="textMultiLine"
@@ -45,7 +44,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginEnd="10dp"
-                android:layout_marginBottom="10dp"
+                android:layout_marginBottom="15dp"
                 android:clickable="true"
                 app:srcCompat="@drawable/ic_baseline_message_24"
                 tools:ignore="SpeakableTextPresentCheck" />

@@ -2,6 +2,8 @@ package com.misiontic.chatapp;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -20,16 +22,22 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.misiontic.chatapp.models.Message;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Locale;
 
 public class HomeActivity extends AppCompatActivity {
 
-    /*private TextView email;*/
     private EditText txtMessage;
     private FloatingActionButton sendMessages;
+    private DatabaseReference reference;
+    private MyAdactador adactador;
+    private ArrayList<Message> messages;
+    private RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -39,16 +47,52 @@ public class HomeActivity extends AppCompatActivity {
         this.sendMessages = findViewById(R.id.send);
         this.txtMessage   = findViewById(R.id.txtMessage);
 
-/*
-        this.email = findViewById(R.id.txtCorreo);
-        if(getIntent().hasExtra("email")){
-            this.email.setText("Bienvenido "+ getIntent().getStringExtra("email").toString());
-        }
-*/
+        this.recyclerView = findViewById(R.id.messagesList);
+
+        this.reference = FirebaseDatabase.getInstance().getReference("messages");
+
+        this.recyclerView.setHasFixedSize(true);
+        this.recyclerView.setLayoutManager(new LinearLayoutManager(this));
+
+        messages = new ArrayList<>();
+        adactador = new MyAdactador(this,messages);
+        recyclerView.setAdapter(adactador);
+
+        reference.addValueEventListener(new ValueEventListener() {
+
+            @Override
+            public void onDataChange(@NonNull DataSnapshot snapshot) {
+
+                messages.clear();
+
+                for(DataSnapshot dataSnapshot:snapshot.getChildren()){
+
+                    String message = dataSnapshot.getValue(String.class);
+                    String user = dataSnapshot.getKey();
+
+                    Message message1 = new  Message(user,message);
+
+                    if(!messages.contains(message1)){
+                        messages.add(message1);
+                    }
+                }
+
+                Collections.reverse(messages);
+
+                adactador.notifyDataSetChanged();
+
+            }
+
+            @Override
+            public void onCancelled(@NonNull DatabaseError error) {
+
+            }
+        });
+
         this.sendMessages.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                readAndWrite();
+                readAndWrite(txtMessage.getText().toString());
                 txtMessage.setText("");
             }
         });
@@ -85,12 +129,14 @@ public class HomeActivity extends AppCompatActivity {
 
     }
 
-    private void readAndWrite(){
+    private void readAndWrite(String m){
 
         if(getIntent().hasExtra("email")){
 
             FirebaseDatabase database = FirebaseDatabase.getInstance();
-            DatabaseReference reference = database.getReference("message").child(getIntent().getStringExtra("email").toString().substring(0,6) + " " + getDateTime());
+            DatabaseReference reference = database.getReference("messages").child(getIntent().getStringExtra("email").toString().substring(0,6) + " " + getDateTime());
+
+            reference.setValue(m);
 
             reference.setValue(txtMessage.getText().toString());
 
