@@ -104,6 +104,8 @@ public class LoginActivity extends AppCompatActivity {
     private void loginC(FirebaseUser user){
 
         Intent gotoHome = new Intent(this,HomeActivity.class);
+
+        gotoHome.putExtra("email",user.getUid());
         startActivity(gotoHome);
         finish();
 
