@@ -23,7 +23,6 @@ public class LoginActivity extends AppCompatActivity {
     private Button btnIniSe;
     private FirebaseAuth myAuth;
     private TextView gotoReg;
-    
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
